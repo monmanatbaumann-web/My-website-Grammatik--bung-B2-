@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deutsch mit Monmanat - Telc & Goethe B2 Kartentrainer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3f4f6 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-main);
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 1.9rem;
+            color: var(--primary-hover);
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .controls-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: 14px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .timer-select, .btn-action {
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-action {
+            background: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-action:hover {
+            background: var(--primary-hover);
+        }
+
+        .timer-display {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--danger);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .flashcard {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            position: relative;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .card-header-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .level-tag {
+            background: #e0e7ff;
+            color: var(--primary-hover);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .task-prompt {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            padding: 12px 18px;
+            border-radius: 10px;
+            text-align: left;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #eef2ff;
+        }
+
+        .option-btn.correct {
+            background: #d1fae5 !important;
+            border-color: var(--accent) !important;
+            color: #065f46;
+        }
+
+        .option-btn.wrong {
+            background: #fee2e2 !important;
+            border-color: var(--danger) !important;
+            color: #991b1b;
+        }
+
+        .card-footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .btn-toggle-solution {
+            background: #f1f5f9;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-toggle-solution:hover {
+            background: #e2e8f0;
+        }
+
+        .solution-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.95rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .solution-box.active {
+            display: block;
+        }
+
+        .speech-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .help-panel {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .help-panel h4 {
+            color: #b45309;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 12px;
+            right: 18px;
+            font-size: 0.85rem;
+            color: rgba(0, 0, 0, 0.35);
+            font-weight: 700;
+            pointer-events: none;
+            letter-spacing: 1px;
+            z-index: 1000;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media(max-width: 600px) {
+            .controls-bar {
+                flex-direction: column;
+                width: 100%;
+            }
+            .flashcard {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Grammatik-Trainer <span class="level-tag">Telc / Goethe B2</span></h1>
+            <p>Interaktives Kartenziehen für E-Mails, Briefe und Berichte</p>
+        </header>
+
+        <div class="controls-bar">
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <select id="timerDuration" class="timer-select">
+                    <option value="60">1 Minute</option>
+                    <option value="30">30 Sekunden</option>
+                </select>
+                <div class="timer-display" id="timerDisplay">
+                    <i class="fa-regular fa-clock"></i> <span id="timeLeft">60</span>s
+                </div>
+            </div>
+            <button class="btn-action" onclick="drawNextCard()">
+                <i class="fa-solid fa-shuffle"></i> Nächste Karte ziehen (<span id="remainingCount">50</span>)
+            </button>
+        </div>
+
+        <div class="flashcard">
+            <div>
+                <div class="card-header-info">
+                    <span id="cardCategory">Kategorie: B2 Grammatik</span>
+                    <span id="cardCounter">Karte 1 von 50</span>
+                </div>
+                
+                <div class="card-body">
+                    <div class="task-prompt" id="taskPrompt">
+                        Lade B2-Aufgabe...
+                    </div>
+                    <div class="options-grid" id="optionsGrid">
+                        <!-- Optionen -->
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="help-panel" id="helpPanel">
+                    <h4><i class="fa-solid fa-lightbulb"></i> Hilfewortschatz (Spontan sprechen & B2 Redemittel):</h4>
+                    <span id="helpVocabText">-</span>
+                </div>
+
+                <div class="card-footer-actions">
+                    <button class="btn-toggle-solution" onclick="toggleSolution()">
+                        <i class="fa-solid fa-eye" id="eyeIcon"></i> ปุ่มเฉลย (Lösung & Übersetzung)
+                    </button>
+                    <span id="scoreDisplay" style="font-size:0.9rem; font-weight:600; color:var(--accent);"></span>
+                </div>
+
+                <div class="solution-box" id="solutionBox">
+                    <div id="solutionText"><b>Richtige Antwort:</b> ...</div>
+                    <div id="translationText" style="margin-top: 6px; color: #334155;"><b>คำแปลภาษาไทย / คำอธิบาย:</b> ...</div>
+                    <button class="speech-btn" onclick="playAudio()">
+                        <i class="fa-solid fa-volume-high"></i> ฟังเสียงอ่านเฉลย (Satz hören)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="watermark">Deutsch mit Monmanat</div>
+
+    <script>
+        // 50 Telc B2 / Goethe B2 Prüfungsfragen
+        const questionsDB = [
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Sehr geehrte Damen und Herren, bezüglich Ihrer Anfrage möchte ich gerne Stellung _______.", options: ["nehmen", "bringen", "machen"], correct: 0, help: "Stellung nehmen zu (+ Dat.) = แสดงความคิดเห็น / ให้ความเห็น", trans: "เฉลย: nehmen | เรียน ท่านผู้มีเกียรติ เกี่ยวกับคำร้องขอของคุณ ดิฉันขอแสดงความคิดเห็นเกี่ยวกับเรื่องนี้ค่ะ" },
+            { cat: "Präpositionen mit Genitiv", prompt: "Sehr geehrte Frau Graf, _______ der ungünstigen Wetterverhältnisse musste das Seminar verschoben werden.", options: ["aufgrund", "trotzdem", "anlässlich"], correct: 0, help: "aufgrund + Genitiv = เนื่องจาก / อันเนื่องมาจาก", trans: "เฉลย: aufgrund | เรียนคุณ Graf เนื่องจากสภาพอากาศที่ไม่อํานวย สัมมนาจึงจำเป็นต้องถูกเลื่อนออกไป" },
+            { cat: "Partizip I als Adjektiv", prompt: "Liebe Kolleginnen, anbei übersende ich Ihnen die Liste der _______ Teilnehmer.", options: ["anwesenden", "anwesende", "anwesender"], correct: 0, help: "Partizip I (anwesend) als attributives Adjektiv im Genitiv/Dativ Plural", trans: "เฉลย: anwesenden | เรียนเพื่อนร่วมงานทุกท่าน แนบมานี้ฉันส่งรายชื่อผู้เข้าร่วมประชุมที่อยู่ ณ ที่นั้นมาให้ค่ะ" },
+            { cat: "Passiv-Ersatzformen", prompt: "Hallo Thomas, diese komplexe Aufgabe ist bis morgen kaum zu _______.", options: ["bewältigen", "bewältigt", "bewältigend"], correct: 0, help: "sein + zu + Infinitiv = Passiv-Ersatzform (kann bewältigt werden)", trans: "เฉลย: bewältigen | สวัสดี Thomas งานที่ซับซ้อนนี้แทบจะไม่สามารถจัดการให้เสร็จได้ภายในวันพรุ่งนี้เลย" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Sehr geehrter Herr Direktor, ich bitte Sie, mein Anliegen in Betracht zu _______.", options: ["ziehen", "stellen", "legen"], correct: 0, help: "in Betracht ziehen = พิจารณา / คํานึงถึง", trans: "เฉลย: ziehen | เรียนท่านผู้อำนวยการ ดิฉันขอความกรุณาท่านโปรดนำข้อเสนอ/ความประสงค์ของดิฉันไปพิจารณาด้วยค่ะ" },
+            { cat: "Feste Präpositionen", prompt: "Liebe Frau Weber, wir legen großen Wert _______ eine reibungslose Zusammenarbeit.", options: ["auf", "für", "über"], correct: 0, help: "Wert legen auf (+ Akk.) = ให้ความสำคัญกับ...", trans: "เฉลย: auf | เรียนคุณ Weber พวกเราให้ความสำคัญอย่างยิ่งต่อความร่วมมือที่ราบรื่น" },
+            { cat: "Konjunktiv II (Vergangenheit)", prompt: "Hallo Julia, wenn du mich rechtzeitig informiert _______, hätte ich helfen können.", options: ["hättest", "würdest", "wärest"], correct: 0, help: "Konjunktiv II Vergangenheit: hätte + Partizip II", trans: "เฉลย: hättest | สวัสดี Julia ถ้าเธอแจ้งฉันล่วงหน้าทันเวลา ฉันก็คงจะสามารถช่วยเหลือเธอได้แล้ว" },
+            { cat: "Zweiteilige Konnektoren", prompt: "Das Projekt war _______ extrem zeitintensiv, _______ sehr lehrreich.", options: ["einerseits ... andererseits", "weder ... noch", "sowohl ... als"], correct: 0, help: "einerseits ... andererseits = ในด้านหนึ่ง... แต่อีกด้านหนึ่ง...", trans: "เฉลย: einerseits ... andererseits | โปรเจกต์นี้ด้านหนึ่งใช้เวลาเยอะมาก แต่อีกด้านหนึ่งก็ให้ความรู้และบทเรียนล้ำค่ามาก" },
+            { cat: "Feste Präpositionen", prompt: "Sehr geehrte Damen und Herren, ich beziehe mich _______ Ihr Schreiben vom 12. Mai.", options: ["auf", "an", "für"], correct: 0, help: "sich beziehen auf (+ Akk.) = อ้างถึง (จดหมาย/เอกสาร)", trans: "เฉลย: auf | เรียน ท่านผู้มีเกียรติ ดิฉันขออ้างถึงหนังสือ/จดหมายของคุณลงวันที่ 12 พฤษภาคม" },
+            { cat: "Irreale Konditionalsätze", prompt: "An Ihrer Stelle _______ ich den Vertrag erst nach eingehender Prüfung unterschreiben.", options: ["würde", "werde", "hätte"], correct: 0, help: "An deiner/Ihrer Stelle würde ich... = ถ้าฉันเป็นคุณ ฉันจะ...", trans: "เฉลย: würde | ถ้าฉันเป็นคุณ ฉันจะเซ็นสัญญานี้หลังจากได้รับการตรวจสอบอย่างละเอียดแล้วเท่านั้น" },
+            { cat: "Subjunktionen (Bedingung)", prompt: "_______ es zu unvorhergesehenen Verzögerungen kommt, informieren wir Sie umgehend.", options: ["Falls", "Obwohl", "Damit"], correct: 0, help: "Falls / Sofern = ในกรณีที่... / หากว่า...", trans: "เฉลย: Falls | ในกรณีที่เกิดความล่าช้าที่ไม่คาดคิด พวกเราจะแจ้งให้คุณทราบโดยทันที" },
+            { cat: "Adjektivdeklination mit Genitiv", prompt: "Lieber Herr Schmidt, trotz _______ Bemühungen konnten wir das Ziel nicht erreichen.", options: ["großer", "großen", "große"], correct: 0, help: "trotz + Genitiv ohne Artikel (großer Bemühungen)", trans: "เฉลย: großer | เรียนคุณ Schmidt แม้ว่าจะมีความพยายามอย่างมาก แต่พวกเราก็ไม่สามารถบรรลุเป้าหมายได้" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Sehr geehrte Damen und Herren, Sie müssen für den entstandenen Schaden Hilfe in Anspruch _______.", options: ["nehmen", "kommen", "führen"], correct: 0, help: "in Anspruch nehmen = ใช้บริการ / ใช้สิทธิ์ / ขอความช่วยเหลือ", trans: "เฉลย: nehmen | เรียน ท่านผู้มีเกียรติ คุณจำเป็นต้องใช้สิทธิ์ขอความช่วยเหลือสำหรับความเสียหายที่เกิดขึ้น" },
+            { cat: "Partizip II als Adjektiv", prompt: "Guten Tag, bezüglich der gestern _______ Vereinbarung sende ich Ihnen den Entwurf.", options: ["getroffenen", "getroffene", "getroffener"], correct: 0, help: "Partizip II attributiv im Genitiv Feminin (der getroffenen Vereinbarung)", trans: "เฉลย: getroffenen | สวัสดีครับ เกี่ยวกับข้อตกลงที่ได้บรรลุร่วมกันเมื่อวานนี้ ผมส่งร่างเอกสารมาให้คุณครับ" },
+            { cat: "Modale Infinitivkonstruktion", prompt: "Es gilt, die Sicherheitsvorschriften strikt _______.", options: ["einzuhalten", "einzuhalten sein", "eingehalten"], correct: 0, help: "es gilt + zu + Infinitiv = จำเป็นต้อง / สิ่งสำคัญคือต้อง...", trans: "เฉลย: einzuhalten | สิ่งสำคัญคือต้องปฏิบัติตามกฎระเบียบด้านความปลอดภัยอย่างเคร่งครัด" },
+            { cat: "Feste Präpositionen", prompt: "Liebe Kolleginnen, wir müssen uns auf die neue Situation erst noch _______.", options: ["einstellen", "anpassen", "gewöhnen"], correct: 0, help: "sich einstellen auf (+ Akk.) = ปรับตัว/เตรียมรับมือกับ...", trans: "เฉลย: einstellen | เรียนเพื่อนร่วมงานทุกท่าน พวกเรายังคงต้องปรับตัวรับมือกับสถานการณ์ใหม่นี้ก่อน" },
+            { cat: "Passiv mit Modalverben", prompt: "Sehr geehrte Kundin, Ihre Beschwerde muss sorgfältig geprüft _______.", options: ["werden", "sein", "haben"], correct: 0, help: "Passiv mit Modalverb: muss + Partizip II + werden", trans: "เฉลย: werden | เรียนท่านลูกค้า ข้อร้องเรียนของคุณจะต้องได้รับการตรวจสอบอย่างละเอียดรอบคอบ" },
+            { cat: "Relativsatz mit Präposition", prompt: "Das ist der Bericht, _______ wir gestern stundenlang diskutiert haben.", options: ["über den", "wofür", "den"], correct: 0, help: "diskutieren über + Akk. -> über den", trans: "เฉลย: über den | นี่คือรายงานอันที่เราได้ถกเถียงกันเป็นเวลาหลายชั่วโมงเมื่อวานนี้" },
+            { cat: "Adverbien (Einschränkung)", prompt: "Die Ausgaben sind gestiegen, _______ ist der Gewinn stabil geblieben.", options: ["immerhin", "deshalb", "folglich"], correct: 0, help: "immerhin / nichtsdestotrotz = อย่างไรก็ตาม / อย่างน้อยที่สุด", trans: "เฉลย: immerhin | ค่าใช้จ่ายเพิ่มสูงขึ้น อย่างไรก็ตามกำไรก็ยังคงมีเสถียรภาพคงที่" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Herr Professor, ich möchte Ihnen meinen Dank zum Ausdruck _______.", options: ["bringen", "geben", "machen"], correct: 0, help: "zum Ausdruck bringen = แสดงความขอบคุณ/ความคิดเห็น", trans: "เฉลย: bringen | เรียนท่านศาสตราจารย์ ผมอยากจะขอแสดงความขอบคุณต่อท่านเป็นอย่างยิ่ง" },
+            { cat: "Genitivattribut", prompt: "Anlässlich des _______ des Firmengründers laden wir Sie herzlich ein.", options: ["Jubiläums", "Jubiläum", "Jubiläumen"], correct: 0, help: "Anlässlich + Genitiv Neutrum (des Jubiläums)", trans: "เฉลย: Jubiläums | เนื่องในโอกาสครบรอบการก่อตั้งบริษัทโดยผู้ก่อตั้ง พวกเราขอเชิญท่านด้วยความยินดียิ่ง" },
+            { cat: "Modalitätsverb (brauchen)", prompt: "Du brauchst dich um die Buchung nicht mehr zu _______.", options: ["kümmern", "sorgen", "machen"], correct: 0, help: "brauchen + nicht + zu + Infinitiv = ไม่จำเป็นต้อง...", trans: "เฉลย: kümmern | คุณไม่จำเป็นต้องจัดการเรื่องการจองอีกต่อไปแล้ว" },
+            { cat: "Zweiteilige Konjunktionen", prompt: "Er spricht _______ Deutsch _______ Englisch fließend, was im Beruf hilft.", options: ["sowohl ... als auch", "entweder ... oder", "nicht nur ... sondern"], correct: 0, help: "sowohl ... als auch = ทั้ง... และ...", trans: "เฉลย: sowohl ... als auch | เขาพูดได้ทั้งภาษาเยอรมันและภาษาอังกฤษได้อย่างคล่องแคล่ว ซึ่งช่วยได้มากในอาชีพการงาน" },
+            { cat: "Feste Präpositionen", prompt: "Wir zweifeln nicht _______ der Richtigkeit dieser Angaben.", options: ["an", "über", "von"], correct: 0, help: "zweifeln an (+ Dativ) = สงสัยใน...", trans: "เฉลย: an | พวกเราไม่ได้สงสัยในความถูกต้องของข้อมูลเหล่านี้เลย" },
+            { cat: "Nebensätze (Konstruktion)", prompt: "Je mehr Aufwand wir betreiben, _______ ist das Ergebnis.", options: ["desto besser", "umso gut", "desto am besten"], correct: 0, help: "Je ... desto / umso + Komparativ", trans: "เฉลย: desto besser | ยิ่งพวกเราทุ่มเทพยายามมากเท่าไหร่ ผลลัพธ์ก็ยิ่งดีขึ้นเท่านั้น" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Die Verhandlungen haben schließlich zu einem Ergebnis _______.", options: ["geführt", "gebracht", "gekommen"], correct: 0, help: "zu einem Ergebnis führen = นำไปสู่ผลลัพธ์", trans: "เฉลย: geführt | ในที่สุดการเจรจาก็นำไปสู่ผลลัพธ์ที่เป็นรูปธรรม" },
+            { cat: "Konjunktiv I (Indirekte Rede)", prompt: "Der Sprecher teilte mit, die Verhandlungen _______ kurz vor dem Abschluss.", options: ["stünden", "stehen", "standen"], correct: 0, help: "Indirekte Rede (Konjunktiv I / II Plural: stünden)", trans: "เฉลย: stünden | โฆษกแจ้งว่าการเจรจาอยู่น้ำหนักใกล้จะเสร็จสิ้นเรียบร้อยแล้ว" },
+            { cat: "Futur II (Vermutung)", prompt: "Bis morgen wird der Handwerker die Reparatur hoffentlich _______ haben.", options: ["abgeschlossen", "abschließen", "abschließt"], correct: 0, help: "Futur II: werden + Partizip II + haben (คาดว่าน่าจะทำเสร็จแล้ว)", trans: "เฉลย: abgeschlossen | หวังว่าภายในวันพรุ่งนี้ช่างจะทำการซ่อมแซมเสร็จสิ้นเรียบร้อยแล้ว" },
+            { cat: "Subjunktionen (Kausal)", prompt: "_______ die Nachfrage stieg, mussten die Preise angehoben werden.", options: ["Da", "Denn", "Weil ja"], correct: 0, help: "Da = เนื่องจาก (นิยมใช้วางหน้าประโยคในภาษาทางการ)", trans: "เฉลย: Da | เนื่องจากอุปสงค์/ความต้องการเพิ่มสูงขึ้น จึงจำเป็นต้องปรับราคาขึ้น" },
+            { cat: "Verben mit Präposition", prompt: "Ich verlasse mich voll und ganz _______ deine Zusage.", options: ["auf", "an", "für"], correct: 0, help: "sich verlassen auf (+ Akk.) = ไว้ใจ / พึ่งพาคำสัญญาของ...", trans: "เฉลย: auf | ฉันเชื่อใจและไว้วางใจในคำสัญญาของคุณอย่างเต็มที่" },
+            { cat: "Partizipialgruppe", prompt: "_______ im Stau stehend, verpasste der Manager den wichtigen Termin.", options: ["Lange", "Lang", "Längere"], correct: 0, help: "Partizip I als Adverbialkonstruktion", trans: "เฉลย: Lange | เนื่องจากติดอยู่ในรถติดเป็นเวลานาน ผู้จัดการจึงพลาดการนัดหมายสำคัญ" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Der Chef hat eine wichtige Entscheidung zu _______.", options: ["treffen", "fällen", "machen"], correct: 0, help: "eine Entscheidung treffen = ตัดสินใจ", trans: "เฉลย: treffen | หัวหน้ามีตัดสินใจสำคัญเรื่องหนึ่งที่ต้องดำเนินการ" },
+            { cat: "Präpositionen (Temporal)", prompt: "_______ des gesamten Jahres gab es keine nennenswerten Zwischenfälle.", options: ["Laufe", "Während", "Innerhalb"], correct: 0, help: "Im Laufe + Genitiv (ในระหว่าง/ตลอดช่วงเวลา)", trans: "เฉลย: Während | ในระหว่างตลอดทั้งปีที่ผ่านมา ไม่มีเหตุการณ์ผิดปกติที่น่านับถือเกิดขึ้นเลย" },
+            { cat: "Passiv-Ersatzformen (gehören)", prompt: "Diese Richtlinie gehört dringend _______.", options: ["überarbeitet", "überarbeiten", "überzuarbeiten"], correct: 0, help: "gehören + Partizip II = Passiv-Ersatz (soll überarbeitet werden)", trans: "เฉลย: überarbeitet | แนวปฏิบัตินี้สมควรได้รับการปรับปรุงแก้ไขอย่างเร่งด่วน" },
+            { cat: "Präpositionaladverbien", prompt: "Wir haben lange _______ diskutiert, wie die Kosten gesenkt werden können.", options: ["darüber", "worüber", "über das"], correct: 0, help: "diskutieren darüber, wie... = ถกเถียงกันเกี่ยวกับเรื่องที่ว่า...", trans: "เฉลย: darüber | พวกเราได้อภิปรายถกเถียงกันเป็นเวลานานเกี่ยวกับวิธีที่จะลดค่าใช้จ่ายลง" },
+            { cat: "Modalpartikeln", prompt: "Das ist _______ eine überraschende Wendung in diesem Fall!", options: ["ja", "denn", "wohl"], correct: 0, help: "ja (Modalpartikel = เน้นความประหลาดใจ/ข้อเท็จจริง)", trans: "เฉลย: ja | นี่มันเป็นการพลิกผันที่น่าประหลาดใจจริงๆ ในคดี/กรณีนี้!" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Wir müssen diese Maßnahme unverzüglich in die Tat _______.", options: ["umsetzen", "bringen", "führen"], correct: 0, help: "in die Tat umsetzen = นำไปปฏิบัติจริง / ทำให้เกิดผลจริง", trans: "เฉลย: umsetzen | พวกเราจะต้องนำมาตรการนี้ไปลงมือปฏิบัติจริงโดยทันที" },
+            { cat: "Genitiv mit Adjektiv", prompt: "Er ist sich der Tragweite seiner Entscheidung vollkommen _______.", options: ["bewusst", "bekannt", "gewiss"], correct: 0, help: "sich (Dat.) einer Sache (Gen.) bewusst sein = ตระหนักรู้ถึง...", trans: "เฉลย: bewusst | เขาตระหนักรู้ถึงขอบเขตและความสำคัญของการตัดสินใจของเขาอย่างเต็มที่" },
+            { cat: "Konjunktionaladverbien", prompt: "Die Zahlungen blieben aus, _______ wurde das Verfahren eingestellt.", options: ["folglich", "trotzdem", "dennoch"], correct: 0, help: "folglich / infolgedessen = ดังนั้น / ผลที่ตามมาคือ...", trans: "เฉลย: folglich | การชำระเงินถูกระงับ ดังนั้นกระบวนการจึงถูกยกเลิก" },
+            { cat: "Infinitiv mit zu nach Nomen", prompt: "Wir haben die Absicht, unser Filialnetz weiter _______.", options: ["auszubauen", "ausbauen", "ausgebaut"], correct: 0, help: "die Absicht haben + zu + Infinitiv", trans: "เฉลย: auszubauen | พวกเรามีความตั้งใจที่จะขยายเครือข่ายสาขาของเราต่อไป" },
+            { cat: "Feste Präpositionen", prompt: "Es mangelt in vielen Bereichen _______ qualifiziertem Personal.", options: ["an", "von", "über"], correct: 0, help: "es mangelt an (+ Dat.) = ขาดแคลน...", trans: "เฉลย: an | ในหลายๆ แฟกเตอร์ มีการขาดแคลนบุคลากรที่มีคุณสมบัติเหมาะสม" },
+            { cat: "Passiv Zustand", prompt: "Das Dokument ist bereits im Archiv _______.", options: ["hinterlegt", "hinterlegen", "werden"], correct: 0, help: "Zustandspassiv: sein + Partizip II", trans: "เฉลย: hinterlegt | เอกสารนี้ถูกจัดเก็บไว้ในคลังเอกสารเรียบร้อยแล้ว" },
+            { cat: "Subjunktionen (Konzessiv)", prompt: "_______ die Bedingungen schwierig waren, wurde das Ziel erreicht.", options: ["Obwohl", "Weil", "Damit"], correct: 0, help: "Obwohl = แม้ว่า...", trans: "เฉลย: Obwohl | แม้ว่าเงื่อนไขต่างๆ จะยากลำบาก แต่เป้าหมายก็ได้รับการบรรลุ" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Wir sollten diese Vorschläge aufmerksam zur Kenntnis _______.", options: ["nehmen", "bringen", "ziehen"], correct: 0, help: "zur Kenntnis nehmen = รับทราบ / พิจารณาข้อมูล", trans: "เฉลย: nehmen | พวกเราควรรับทราบข้อเสนอแนะเหล่านี้อย่างตั้งใจ" },
+            { cat: "Adjektive mit Dativ", prompt: "Diese Entscheidung ist für uns alle von großer Bedeutung und Ihnen bestimmt _______.", options: ["einleuchtend", "klarer", "bewusst"], correct: 0, help: "jemandem einleuchtend sein = เข้าใจได้ชัดเจน / สมเหตุสมผลสำหรับใคร", trans: "เฉลย: einleuchtend | การตัดสินใจนี้มีความสำคัญอย่างยิ่งสำหรับพวกเราทุกคน และแน่นอนว่าชัดเจนสำหรับคุณ" },
+            { cat: "Verben mit Präposition", prompt: "Wir protestieren aufs Schärfste _______ diese Neuregelung.", options: ["gegen", "über", "für"], correct: 0, help: "protestieren gegen (+ Akk.) = คัดค้าน / ประท้วงต่อ...", trans: "เฉลย: gegen | พวกเราคัดค้านกฎระเบียบใหม่นี้อย่างรุนแรงที่สุด" },
+            { cat: "Partizipialattribut erweiterten", prompt: "Die von den Experten _______ Lösung erwies sich als optimal.", options: ["vorgeschlagene", "vorgeschlagen", "vorschlagende"], correct: 0, help: "Erweitertes Partizip II attributiv (die vorgeschlagene Lösung)", trans: "เฉลย: vorgeschlagene | ทางออกที่ได้รับคำแนะนำจากผู้เชี่ยวชาญพิสูจน์แล้วว่ามีความเหมาะสมที่สุด" },
+            { cat: "Pronomen (Generalisierend)", prompt: "Wer auch _______ Fragen dazu hat, kann sich an das Sekretariat wenden.", options: ["immer", "nie", "schon"], correct: 0, help: "Wer auch immer = ไม่ว่าใครก็ตามที่...", trans: "เฉลย: immer | ไม่ว่าใครก็ตามที่มีคำถามเกี่ยวกับเรื่องนี้ สามารถติดต่อแผนกธุรการได้" },
+            { cat: "Nomen-Verb-Verbindungen", prompt: "Der Vertrag wurde gestern unter Zeichnung in Kraft _______.", options: ["gesetzt", "gebracht", "getreten"], correct: 0, help: "in Kraft setzen = บังคับใช้ (มีผลทางกฎหมาย)", trans: "เฉลย: gesetzt | สัญญานี้ได้รับการลงนามและมีผลบังคับใช้เมื่อวานนี้" },
+            { cat: "Konjunktiv II (Vergangenheit Höflichkeit)", prompt: "_______ Sie so freundlich, mir die Unterlagen zukommen zu lassen?", options: ["Wären", "Würden", "Hätten"], correct: 0, help: "Wären Sie so freundlich... = จะกรุณาไหมถ้า...", trans: "เฉลย: Wären | จะเป็นความกรุณาอย่างยิ่งไหมครับหากท่านจะส่งเอกสารมาให้ผม?" }
+        ];
+
+        let shuffledIndices = [];
+        let currentCardIndex = 0;
+        let timer = null;
+        let timeLeft = 60;
+        let score = 0;
+        let answeredCurrent = false;
+
+        function initDeck() {
+            shuffledIndices = Array.from(Array(questionsDB.length).keys());
+            for (let i = shuffledIndices.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffledIndices[i], shuffledIndices[j]] = [shuffledIndices[j], shuffledIndices[i]];
+            }
+            currentCardIndex = 0;
+            score = 0;
+            loadCard();
+        }
+
+        function loadCard() {
+            if (currentCardIndex >= shuffledIndices.length) {
+                alert("Herzlichen Glückwunsch! Du hast alle 50 B2-Karten erfolgreich absolviert.");
+                initDeck();
+                return;
+            }
+
+            answeredCurrent = false;
+            const qIndex = shuffledIndices[currentCardIndex];
+            const q = questionsDB[qIndex];
+
+            document.getElementById("cardCategory").innerText = "Kategorie: " + q.cat;
+            document.getElementById("cardCounter").innerText = `Karte ${currentCardIndex + 1} von ${questionsDB.length}`;
+            document.getElementById("remainingCount").innerText = questionsDB.length - (currentCardIndex + 1);
+            document.getElementById("taskPrompt").innerHTML = q.prompt;
+            document.getElementById("helpVocabText").innerText = q.help;
+            document.getElementById("solutionText").innerHTML = `<b>Richtige Antwort:</b> ${q.options[q.correct]}`;
+            document.getElementById("translationText").innerHTML = `<b>คำแปล / คำอธิบาย:</b> ${q.trans}`;
+            
+            document.getElementById("solutionBox").classList.remove("active");
+            document.getElementById("eyeIcon").className = "fa-solid fa-eye";
+            document.getElementById("scoreDisplay").innerText = "";
+
+            let optionIndices = [0, 1, 2];
+            optionIndices.sort(() => Math.random() - 0.5);
+
+            const grid = document.getElementById("optionsGrid");
+            grid.innerHTML = "";
+
+            optionIndices.forEach((origIdx) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = q.options[origIdx];
+                btn.onclick = () => checkAnswer(origIdx, q.correct, btn);
+                grid.appendChild(btn);
+            });
+
+            resetTimer();
+        }
+
+        function checkAnswer(selected, correct, btnElement) {
+            if (answeredCurrent) return;
+            answeredCurrent = true;
+            clearInterval(timer);
+
+            const buttons = document.querySelectorAll(".option-btn");
+            buttons.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btnElement.classList.add("correct");
+                score++;
+                document.getElementById("scoreDisplay").innerText = "Richtig! +1 Punkt";
+            } else {
+                btnElement.classList.add("wrong");
+                document.getElementById("scoreDisplay").innerText = "Falsch!";
+                buttons.forEach(b => {
+                    if (b.innerText === questionsDB[shuffledIndices[currentCardIndex]].options[correct]) {
+                        b.classList.add("correct");
+                    }
+                });
+            }
+
+            document.getElementById("solutionBox").classList.add("active");
+            document.getElementById("eyeIcon").className = "fa-solid fa-eye-slash";
+        }
+
+        function toggleSolution() {
+            const box = document.getElementById("solutionBox");
+            const icon = document.getElementById("eyeIcon");
+            box.classList.toggle("active");
+            if (box.classList.contains("active")) {
+                icon.className = "fa-solid fa-eye-slash";
+            } else {
+                icon.className = "fa-solid fa-eye";
+            }
+        }
+
+        function drawNextCard() {
+            currentCardIndex++;
+            loadCard();
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            const durationSelect = document.getElementById("timerDuration");
+            timeLeft = parseInt(durationSelect.value);
+            document.getElementById("timeLeft").innerText = timeLeft;
+
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timeLeft").innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (!answeredCurrent) {
+                        answeredCurrent = true;
+                        document.querySelectorAll(".option-btn").forEach(b => b.disabled = true);
+                        document.getElementById("scoreDisplay").innerText = "Zeit abgelaufen!";
+                        document.getElementById("solutionBox").classList.add("active");
+                    }
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            startTimer();
+        }
+
+        document.getElementById("timerDuration").addEventListener("change", startTimer);
+
+        function playAudio() {
+            const q = questionsDB[shuffledIndices[currentCardIndex]];
+            let fullSentence = q.prompt.replace("_______", q.options[q.correct]);
+            
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(fullSentence);
+                utterance.lang = 'de-DE';
+                utterance.rate = 0.88;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Dein Browser unterstützt keine Sprachausgabe.");
+            }
+        }
+
+        window.onload = () => {
+            initDeck();
+        };
+    </script>
+</body>
+</html>
